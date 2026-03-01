@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
 from core.config import settings
-from routers import read, mutate, ingest
+from routers import ingest, mutate, read
 
 app = FastAPI(title=settings.APP_NAME, version="1.0.0")
 
@@ -16,6 +17,7 @@ app.add_middleware(
 app.include_router(read.router, prefix="/api", tags=["read"])
 app.include_router(mutate.router, prefix="/api", tags=["mutate"])
 app.include_router(ingest.router, prefix="/api/ingest", tags=["ingest"])
+
 
 @app.get("/")
 def health_check():

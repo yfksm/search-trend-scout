@@ -1,12 +1,14 @@
-from pydantic import BaseModel, ConfigDict
-from typing import List, Optional
 from datetime import datetime
 from uuid import UUID
+
+from pydantic import BaseModel, ConfigDict
+
 
 class TagSchema(BaseModel):
     id: UUID
     name: str
     model_config = ConfigDict(from_attributes=True)
+
 
 class SourceSchema(BaseModel):
     id: UUID
@@ -14,35 +16,38 @@ class SourceSchema(BaseModel):
     url: str
     model_config = ConfigDict(from_attributes=True)
 
+
 class ItemBase(BaseModel):
     id: UUID
     title: str
     url: str
-    published_at: Optional[datetime]
-    site: Optional[str]
-    why_important: Optional[str]
+    published_at: datetime | None
+    site: str | None
+    why_important: str | None
     score: float
-    lane: Optional[str]
-    
-    tags: List[TagSchema] = []
-    source: Optional[SourceSchema] = None
-    
+    lane: str | None
+
+    tags: list[TagSchema] = []
+    source: SourceSchema | None = None
+
     # Computed user states
     is_read: bool = False
     is_bookmarked: bool = False
-    
+
     model_config = ConfigDict(from_attributes=True)
+
 
 class ItemDetail(ItemBase):
-    summary_tldr: Optional[str] = None
-    summary_bullets: Optional[List[str]] = None
-    tradeoffs: Optional[str] = None
-    content_text: Optional[str] = None
-    
+    summary_tldr: str | None = None
+    summary_bullets: list[str] | None = None
+    tradeoffs: str | None = None
+    content_text: str | None = None
+
     model_config = ConfigDict(from_attributes=True)
 
+
 class FeedResponse(BaseModel):
-    items: List[ItemBase]
+    items: list[ItemBase]
     total: int
     page: int
     size: int

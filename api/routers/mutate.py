@@ -1,13 +1,15 @@
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
-from uuid import UUID
 from datetime import datetime
+from uuid import UUID
+
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.db import get_db
-from models.domain import UserState, Item
+from models.domain import Item, UserState
 
 router = APIRouter()
+
 
 async def get_or_create_state(db: AsyncSession, item_id: UUID) -> UserState:
     # Verify item exists
@@ -18,11 +20,11 @@ async def get_or_create_state(db: AsyncSession, item_id: UUID) -> UserState:
     q = select(UserState).filter(UserState.item_id == item_id)
     result = await db.execute(q)
     state = result.scalar_one_or_none()
-    
+
     if not state:
         state = UserState(item_id=item_id)
         db.add(state)
-        
+
     return state
 
 
